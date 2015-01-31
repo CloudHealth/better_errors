@@ -100,7 +100,11 @@ module BetterErrors
     end
 
     def inspect_value(obj)
-      CGI.escapeHTML(obj.inspect)
+      if obj.respond_to?(:to_sql)
+        CGI.escapeHTML("Query: #{obj.send(:to_sql)}")
+      else
+        CGI.escapeHTML(obj.inspect)
+      end
     rescue NoMethodError
       "<span class='unsupported'>(object doesn't support inspect)</span>"
     rescue Exception
